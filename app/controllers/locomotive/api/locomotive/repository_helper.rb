@@ -19,11 +19,15 @@ module Locomotive
   #   @translation ||= translations.find(params[:id])
   # end
   #
+
   module RepositoryHelper
 
     attr_accessor :repository_klass, :use_form_object
+    
 
-    def setup_methods_for(repository_klass, opts = {})
+    def setup_methods_for(name, opts) #repository_klass, opts = {})
+      repositories.send(name)
+
       self.repository_klass = repository_klass
       self.use_form_object = opts[:use_form_object]
 

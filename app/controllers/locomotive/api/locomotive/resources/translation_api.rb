@@ -7,7 +7,8 @@ module Locomotive
         entity_class = Locomotive::TranslationEntity
 
         before do
-          setup_methods_for(Translation, use_form_object: true)
+          # setup_methods_for(Translation, use_form_object: true)
+          @repository = <build the repository scoped by the current site>
           authenticate_locomotive_account!
         end
 
@@ -15,17 +16,19 @@ module Locomotive
         get :index do
           auth :index?
 
+          translations = @repository.all
+
           present translations, with: entity_class
         end
 
 
-        desc "New translation"
-        get :new do
-          auth :new?
-          translation = translations.build
-
-          present translation, with: entity_class
-        end
+        # desc "New translation"
+        # get :new do
+        #   auth :new?
+        #   translation = translations.build
+        #
+        #   present translation, with: entity_class
+        # end
 
 
         desc "Show a translation"
@@ -35,6 +38,8 @@ module Locomotive
         route_param :id do
           get do
             auth :show?
+
+            translation = @repository.find(params[:id])
 
             present translation, with: entity_class
           end
@@ -54,6 +59,8 @@ module Locomotive
           form = translation_form.new(translation_params)
           form.site = current_site
           form.save
+
+          translation = @repository.
 
           present form, with: entity_class
         end

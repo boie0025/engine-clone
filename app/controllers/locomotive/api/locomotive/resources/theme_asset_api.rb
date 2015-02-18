@@ -18,6 +18,7 @@ module Locomotive
 
           present theme_assets, with: entity_class
         end
+
       end
 
     end

@@ -29,7 +29,7 @@ module Locomotive
           header 'X-Locomotive-Site-Handle', site.handle
         end
 
-        describe "GET /locomotive/acme/api_test/v2/theme_assets/index.json" do
+        describe "GET index" do
           context 'JSON' do
             before { get "#{url_prefix}/index.json" }
             it 'returns a successful response' do
