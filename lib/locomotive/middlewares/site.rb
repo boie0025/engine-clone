@@ -83,6 +83,7 @@ module Locomotive
       # The request is for one of the domains registered in Locomotive.
       # Find the related site.
       def fetch_from_host(request)
+        binding.pry
         request.env['locomotive.path'] = request.path_info
         Locomotive::Site.match_domain(request.host).first
       end

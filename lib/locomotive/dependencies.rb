@@ -34,5 +34,7 @@ require 'jquery/rails'
 require 'jquery-ui-rails'
 require 'nprogress-rails'
 
+require 'ahoy'
+
 require 'grape'
 require 'grape-entity'

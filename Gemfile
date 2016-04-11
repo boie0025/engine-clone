@@ -34,15 +34,15 @@ group :development do
 
   gem 'thor'
 
-  gem 'quiet_assets'
+  # gem 'quiet_assets' # conflicts with Ahoy
 
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry-byebug'
 
   # gem 'unicorn-rails' # Using unicorn_rails instead of webrick (default server)
-  # gem 'thin'
-  gem 'puma'
+  gem 'thin'
+  # gem 'puma'
 
   # i18n-tasks helps you find and manage missing and unused translations.
   gem 'i18n-tasks', '~> 0.8.7'

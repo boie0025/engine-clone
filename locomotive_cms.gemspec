@@ -67,6 +67,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'grape',                           '~> 0.12.0'
   s.add_dependency 'grape-entity',                    '0.4.5'
+  s.add_dependency 'ahoy_matey',                      '~> 1.3.0'
 
   s.add_development_dependency "faye-websocket"
 

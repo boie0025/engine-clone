@@ -21,6 +21,7 @@
 //= require nprogress-ajax
 //= require locomotive/vendor
 //= require ./locomotive/application
+//= require ahoy
 
 $(document).ready(function() {
   $.datepicker.setDefaults($.datepicker.regional[window.locale]);

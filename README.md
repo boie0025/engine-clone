@@ -46,6 +46,7 @@ Here is a list of the main gems used to power the Locomotive platform:
 - Devise 3.4  - *Authentication*
 - Carrierwave - *Upload*
 - Pundit      - *Permissions*
+- Ahoy        - *Site Analytics*
 
 ### Translating the back-office
 
