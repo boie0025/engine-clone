@@ -36,32 +36,15 @@ module Locomotive
 
         extend Forwardable
 
-        def_delegators :page, :_id, :title, :index_or_not_found?, :published?, :templatized?, :translated?, :redirect?, :response_type, :depth
+        def_delegators :page, :_id, :parent, :title, :index_or_not_found?, :published?, :templatized?, :translated?, :redirect?, :response_type, :depth
 
         def fold_state
           controller.send(:cookies)["node-#{_id}"] != 'unfolded' ? 'folded' : 'unfolded'
         end
 
         def nodes
-          children.map { |(child, children)| self.class.new(child, children, controller) }
-        end
-
-        def icon
-          if templatized?
-            'fa-gear'
-          elsif redirect?
-            'fa-link'
-          else
-            response_type_icon
-          end
-        end
-
-        def response_type_icon
-          case response_type
-          when 'application/rss+xml'          then 'fa-rss'
-          when 'application/json', 'text/xml' then 'fa-file-code-o'
-          else
-            'fa-file-text-o fa-flip-horizontal'
+          children.map do |(child, children)|
+            self.class.new(child, children, controller)
           end
         end
 
@@ -77,20 +60,32 @@ module Locomotive
           base.join(' ')
         end
 
-        def text_inline_style
-          if width = max_width
+        def text_inline_style(inc = 0)
+          if width = max_width(inc)
             "max-width: #{width}px;"
           else
             ''
           end
         end
 
+        def deeper_text_inline_style
+          text_inline_style(1)
+        end
+
         def draggable
-          !index_or_not_found? && !templatized? ? 'draggable' : ''
+          draggable? ? 'draggable' : ''
         end
 
         def draggable?
-          !index_or_not_found? && !templatized?
+          !index_or_not_found? && (templatized? || !templatized_parent?)
+        end
+
+        def templatized_parent?
+          parent.templatized?
+        end
+
+        def templatized_children?
+          !templatized_page.nil?
         end
 
         def templatized_page
@@ -109,8 +104,8 @@ module Locomotive
           end)
         end
 
-        def max_width
-          depth >= 2 ? MAX_WIDTH[depth - 2] : nil
+        def max_width(inc = 0)
+          depth >= 2 ? MAX_WIDTH[depth - 2 + inc] : nil
         end
 
         alias :to_param :_id

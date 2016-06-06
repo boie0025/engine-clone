@@ -7,20 +7,21 @@ class Locomotive.Views.EditableElements.IframeView extends Backbone.View
   startup: true
 
   initialize: ->
-    # shortcut
-    @window = $(@el)[0].contentWindow
+    if $(@el).size() > 0
+      # shortcut
+      @window = $(@el)[0].contentWindow
 
-    # when the url of the iframe changes, process
-    $(@el).load (event) => @on_load(event)
+      # when the url of the iframe changes, process
+      $(@el).load (event) => @on_load(event)
 
   reload: ->
     $(@el).attr('src', @preview_url)
 
   on_load: (event) ->
-    @register_beforeunload()
-
     # Able to get the path to the edit form?
-    if (path = @edit_view_path())?
+    if (path = @edit_view_path(event))?
+      @register_beforeunload()
+
       @preview_url = @window.document.location.href
 
       if !@startup
@@ -29,9 +30,11 @@ class Locomotive.Views.EditableElements.IframeView extends Backbone.View
       else
         @startup = false
 
-    @build_and_render_page_view()
+      @build_and_render_page_view()
 
-  edit_view_path: ->
+    return false;
+
+  edit_view_path: (event) ->
     # the browser might be unable to load the iframe because of
     # the 'X-Frame-Options' option which is set to 'SAMEORIGIN'.
     try
@@ -41,6 +44,7 @@ class Locomotive.Views.EditableElements.IframeView extends Backbone.View
       # reload the iframe with the previous url and display an error message
       @reload()
       Locomotive.notify $(@el).data('redirection-error'), 'warning'
+
       return null
 
   build_and_render_page_view: ->

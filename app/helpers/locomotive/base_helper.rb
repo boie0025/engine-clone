@@ -90,9 +90,9 @@ module Locomotive
       end
     end
 
-    def locale_picker_link
+    def locale_picker_link(&block)
       return '' if current_site.locales.size == 1
-      render 'locomotive/shared/locale_picker_link'
+      render partial: 'locomotive/shared/locale_picker_link', locals: { url_block: block_given? ? block : nil }
     end
 
     def flash_message
@@ -152,7 +152,7 @@ module Locomotive
     # @return [ String ] The HTML image tag with the path to the matching flag.
     #
     def flag_tag(locale, size = '24x24')
-      image_tag("locomotive/icons/flags/#{locale}.png", class: "flag flag-#{locale}", size: size)
+      %(<i class="flag flag-#{locale} flag-#{size.gsub('x', '-')}"></i>).html_safe
     end
 
     def nocoffee_tag
@@ -239,20 +239,32 @@ module Locomotive
 
     # cache keys
 
+    def base_cache_key_without_site
+      [Locomotive::VERSION, locale]
+    end
+
+    def base_cache_key
+      base_cache_key_without_site + [ current_site._id, current_site.handle]
+    end
+
+    def base_cache_key_for_sidebar
+      base_cache_key + [current_membership.role]
+    end
+
     def cache_key_for_sidebar
-      "#{Locomotive::VERSION}/site/#{current_site._id}/sidebar/#{current_site.last_modified_at.to_i}/role/#{current_membership.role}/locale/#{::Mongoid::Fields::I18n.locale}"
+      base_cache_key_for_sidebar + ['sidebar', current_site.last_modified_at.to_i, current_content_locale]
     end
 
     def cache_key_for_sidebar_pages
       count          = current_site.pages.count
       max_updated_at = current_site.pages.max(:updated_at).try(:utc).try(:to_s, :number).to_i
-      "#{Locomotive::VERSION}/site/#{current_site._id}/#{current_site.handle}/sidebar/pages-#{count}-#{max_updated_at}/locale/#{::Mongoid::Fields::I18n.locale}"
+      base_cache_key_for_sidebar + ['pages', count, max_updated_at, current_content_locale]
     end
 
     def cache_key_for_sidebar_content_types
       count          = current_site.content_types.count
-      max_updated_at = current_site.content_entries.max(:updated_at).try(:utc).try(:to_s, :number).to_i
-      "#{Locomotive::VERSION}/site/#{current_site._id}/#{current_site.handle}/sidebar/content_types-#{count}-#{max_updated_at}"
+      max_updated_at = current_site.content_types.max(:updated_at).try(:utc).try(:to_s, :number).to_i
+      base_cache_key_for_sidebar + ['content_types', count, max_updated_at]
     end
 
   end
