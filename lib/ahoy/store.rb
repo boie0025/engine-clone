@@ -12,5 +12,5 @@ end
 
 Ahoy.visit_duration = 30.minutes
 Ahoy.cookie_domain = :all
-Ahoy.geocode = :async
+Ahoy.geocode = false 
 Ahoy.quiet = false # conflicts with quiet_assets

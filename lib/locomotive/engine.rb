@@ -69,6 +69,7 @@ module Locomotive
       # specifying Rack::Lock caused an error in production.
       app.middleware.insert 4, '::Locomotive::Middlewares::ImageThumbnail'
       app.middleware.use '::Locomotive::Middlewares::Site'
+      app.middleware.use '::Locomotive::Middlewares::Ahoy'
     end
 
     initializer 'locomotive.i18n' do |app|
