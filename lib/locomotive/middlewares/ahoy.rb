@@ -17,9 +17,11 @@ module Locomotive
       private
 
       def track!
-        tracker.track_visit
-        # Matching this: https://github.com/ankane/ahoy/blob/v1.4.0/vendor/assets/javascripts/ahoy.js#L242
-        tracker.track('$view', view_properties, {})
+        if engine_site.present?
+          tracker.track_visit
+          # Matching this: https://github.com/ankane/ahoy/blob/v1.4.0/vendor/assets/javascripts/ahoy.js#L242
+          tracker.track('$view', view_properties, {})
+        end
       end
 
       def tracker
@@ -33,7 +35,8 @@ module Locomotive
       def view_properties
         {
           url: env["REQUEST_PATH"],
-          site_name: engine_site.name
+          site_handle: engine_site.handle,
+          site_id: engine_site._id
         }
       end
 
