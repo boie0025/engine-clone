@@ -10,14 +10,16 @@ module Locomotive
 
       def call(env)
         self.env = env
-        track_visit!
+        track!
         app.call(env)
       end
 
       private
 
-      def track_visit!
+      def track!
         tracker.track_visit
+        # Matching this: https://github.com/ankane/ahoy/blob/v1.4.0/vendor/assets/javascripts/ahoy.js#L242
+        tracker.track('$view', view_properties, {})
       end
 
       def tracker
@@ -28,9 +30,17 @@ module Locomotive
         @request ||= ActionDispatch::Request.new(env)
       end
 
-      # def engine_site
-      #   @engine_site ||= env['locomotive.site']
-      # end
+      def view_properties
+        {
+          url: env["REQUEST_PATH"],
+          site_name: engine_site.name
+        }
+      end
+
+      def engine_site
+        @engine_site ||= env['locomotive.site']
+      end
+
 
     end
 
